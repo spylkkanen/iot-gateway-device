@@ -261,6 +261,74 @@ Wlan client device:
 
 # Optional usefull services to install
 
+## FTP Server install
+https://www.techrepublic.com/article/how-to-quickly-setup-an-ftp-server-on-ubuntu-18-04/
+
+1. sudo su
+
+2. `apt-get install vsftpd`
+
+3. Start `systemctl start vsftpd`.
+
+4. Enable the service `systemctl enable vsftpd`.
+```
+root@ubuntu:/home/ubuntu# systemctl enable vsftpd
+Synchronizing state of vsftpd.service with SysV service script with /lib/systemd/systemd-sysv-install.
+Executing: /lib/systemd/systemd-sysv-install enable vsftpd
+root@ubuntu:/home/ubuntu#
+```
+
+5. `useradd -m ftpuser`
+
+6. `passwd ftpuser`
+
+7. FTP user: `ftpuser/<DEFINE_PASSWORD>`
+
+8. `mv /etc/vsftpd.conf /etc/vsftpd.conf.orig`
+
+9. `nano /etc/vsftpd.conf`
+```
+listen=NO
+listen_ipv6=YES
+anonymous_enable=NO
+local_enable=YES
+write_enable=YES
+local_umask=022
+dirmessage_enable=YES
+use_localtime=YES
+xferlog_enable=YES
+connect_from_port_20=YES
+chroot_local_user=YES
+secure_chroot_dir=/var/run/vsftpd/empty
+pam_service_name=vsftpd
+rsa_cert_file=/etc/ssl/certs/ssl-cert-snakeoil.pem
+rsa_private_key_file=/etc/ssl/private/ssl-cert-snakeoil.key
+ssl_enable=NO
+pasv_enable=Yes
+pasv_min_port=10000
+pasv_max_port=10100
+allow_writeable_chroot=YES
+```
+
+10. `service vsftpd status`
+```
+root@ubuntu:/home/ftpuser# service vsftpd status
+● vsftpd.service - vsftpd FTP server
+   Loaded: loaded (/lib/systemd/system/vsftpd.service; enabled; vendor preset: enabled)
+   Active: active (running) since Sun 2020-04-19 14:32:27 UTC; 21min ago
+  Process: 7558 ExecStartPre=/bin/mkdir -p /var/run/vsftpd/empty (code=exited, status=0/SUCCESS)
+ Main PID: 7559 (vsftpd)
+    Tasks: 3 (limit: 1976)
+   CGroup: /system.slice/vsftpd.service
+           ├─7559 /usr/sbin/vsftpd /etc/vsftpd.conf
+           ├─7654 /usr/sbin/vsftpd /etc/vsftpd.conf
+           └─7656 /usr/sbin/vsftpd /etc/vsftpd.conf
+
+Apr 19 14:32:27 ubuntu systemd[1]: Starting vsftpd FTP server...
+Apr 19 14:32:27 ubuntu systemd[1]: Started vsftpd FTP server.
+root@ubuntu:/home/ftpuser#
+```
+
 ## Install NodeJS
 
 1. Install NodeJS. https://github.com/nodesource/distributions#debinstall.
